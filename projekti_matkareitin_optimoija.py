@@ -193,14 +193,20 @@ def distance_to_neighbour(data, departure, destination):
 #     return msg_to_print
 
 def display_routes(dict_routes):
-    line_lenght = 14
-    line_lenght_2 = 5
+    
+    
+    line_length = 14
+    line_length_2 = 5
 
     for key, payload in sorted(dict_routes.items()):
-        str_key = str(key)
-        leftover_lenght = line_lenght - len(str_key)
-        str_payload = str(payload)
-        print(str_key + " " * leftover_lenght + str_payload)
+
+        print(f"Key: {key}, payload: {payload}")
+
+
+        # str_key = str(key)
+        # leftover_lenght = line_length - len(str_key)
+        # str_payload = str(payload)
+        # print(str_key + " " * leftover_lenght + str_payload)
 
 
 
@@ -229,11 +235,11 @@ def main():
             # |                                        |
             # +----------------------------------------+
 
+            display_routes(distance_data)
 
-
-
-            line_lenght = 14
-            line_lenght_2 = 5
+            #
+            # line_lenght = 14
+            # line_lenght_2 = 5
 
             # for key, payload in sorted(distance_data.items()):
             #     str_key = str(key)
