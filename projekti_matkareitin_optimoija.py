@@ -87,48 +87,47 @@ def read_distance_file(file_name):
     unless an error happens during the file reading operation.
 
     :param file_name: str, The name of the file to be read.
-    :return: ????? | None: A data structure containing the information
-             read from the <file_name> or None if any kind of error happens.
-             The data structure to be chosen is completely up to you as long
-             as all the required operations can be implemented using it.
+    :return: dict_file_contents | None: A data structure containing the
+             information read from the <file_name> or None if any kind of error
+             happens. The data structure to be chosen is completely up to you as
+             long as all the required operations can be implemented using it.
     """
-
-    # +----------------------------------------------------------------+
-    # |                                                                |
-    # |  TODO: Implement your own version of read_distance_file here.  |
-    # |                                                                |
-    # +----------------------------------------------------------------+
 
     dict_file_contents = {}
 
     try:
-        file = open(file_name, mode="r", encoding="utf-8")
+        # UTF-8 mahdollistaa "ääkkösten" käsittelyn
+        text_file = open(file_name, mode="r", encoding="utf-8")
 
-        i = 0
+        # Lukee tiedoston sisällön riveittäin, kerää halutut tiedot talteen
+        # omiin kenttiin ja laittaa arvoja sanakirjaan niin, että hakuavaimeksi
+        # tulee rivin ensimmäinen kenttä eli haettava kaupunki.
+        for line in text_file:
 
-        for line in file:
             line = line.strip()
 
-            # splitted_line = line.split(";")
-            # file_content[splitted_line[0]] = splitted_line[1]
-
+            # Rivin kentät otetaan talteen omiin muuttujiinsa
             departure, destination, distance = line.split(";")
 
+            # Jos rivillä olevaa kaupunkia ei löydy sanakirjasta, luodaan
+            # sanakirjaan kokonaan uusi avain lähtökaupungin nimellä
             if departure not in dict_file_contents:
                 dict_file_contents[departure] = {destination: distance}
 
+            # Jos lähtökaupunki löytyy jo sanakirjasta, päivitetään vain sieltä
+            # lähteviä reittejä
             else:
                 dict_file_contents[departure][destination] = distance
 
+        text_file.close()
+
+    # Tiedoston luku epäonnistuu
     except OSError:
         return None
 
+    # Rivi ei noudata haluttua muotoilua (lähtökaupunki;kohdekaupunki;etäisyys)
     except ValueError:
         return None
-
-
-
-    print(dict_file_contents)
 
     return dict_file_contents
 
@@ -193,13 +192,23 @@ def distance_to_neighbour(data, departure, destination):
 #
 #     return msg_to_print
 
+def display_routes(dict_routes):
+    line_lenght = 14
+    line_lenght_2 = 5
+
+    for key, payload in sorted(dict_routes.items()):
+        str_key = str(key)
+        leftover_lenght = line_lenght - len(str_key)
+        str_payload = str(payload)
+        print(str_key + " " * leftover_lenght + str_payload)
+
+
 
 def main():
-    #    distances.txt
+
+# distances.txt
 
     input_file = input("Enter input file name: ")
-    distances = "distances.txt"
-
     distance_data = read_distance_file(input_file)
 
     if distance_data is None:
@@ -219,7 +228,9 @@ def main():
             # |  TODO: Implement "display" action.     |
             # |                                        |
             # +----------------------------------------+
-            ...
+
+
+
 
             line_lenght = 14
             line_lenght_2 = 5
