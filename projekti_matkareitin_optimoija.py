@@ -193,6 +193,11 @@ def distance_to_neighbour(data, departure, destination):
 #     return msg_to_print
 
 def display_routes(dict_routes):
+    """
+    
+    :param dict_routes:
+    :return:
+    """
 
     # MUUTTUJIEN ALUSTUKSET TIETOTYYPEITTÄIN AAKKOSJÄRJESTYKSESSÄ
 
@@ -228,6 +233,36 @@ def display_routes(dict_routes):
                   len_str_distance_with_spaces)
 
 
+def add_a_route(dict_routes):
+    """
+
+    :param dict_routes:
+    :return:
+    """
+
+    # MUUTTUJIEN ALUSTUKSET TIETOTYYPEITTÄIN AAKKOSJÄRJESTYKSESSÄ
+
+    # Kokonaisluvut
+    distance_between_cities = 0
+
+    # Merkkijonot
+    departure_city = ""
+    destination_city = ""
+    str_distance_between_cities = ""
+
+    departure_city = input("Enter departure city: ")
+    destination_city = input("Enter destination city: ")
+    str_distance_between_cities = input("Distance: ")
+
+    try:
+        distance_between_cities = int(str_distance_between_cities)
+
+    except ValueError:
+
+        print(f"{str_distance_between_cities} is not an integer.")
+        return None
+
+
 def main():
     # distances.txt
 
@@ -251,58 +286,9 @@ def main():
         elif "display".startswith(action):
             display_routes(distance_data)
 
-            #
-            # line_lenght = 14
-            # line_lenght_2 = 5
-
-            # for key, payload in sorted(distance_data.items()):
-            #     str_key = str(key)
-            #     leftover_lenght = line_lenght - len(str_key)
-            #     str_payload = str(payload)
-            #     print(str_key + " " * leftover_lenght + str_payload)
-
-            #
-            # leftover_lenght = line_lenght - (len(key) + len(payload))
-            # print_line = line_lenght - leftover_lenght
-            # payload_lenght = len(payload)
-            # str_payload = str(payload)
-            # print(key + " " * 5 + " " * print_line + str_payload)
-
-            # for key, payload in distance_data.items():
-            #     print(f"Key: {key}, Payload: {payload}")
-
-            # try:
-            #     file = open(input_file, mode="r")
-            #
-            #     file_content = file.readlines()
-            #
-            #     new_list = []
-            #
-            #     for line in file_content:
-            #         stripped_line = line.strip()
-            #         splitted_line = stripped_line.split(";")
-            #         new_list.append(splitted_line)
-            #
-            #
-            #     for row in sorted(new_list):
-            #         join = " ".join(row)
-            #         print(f"{join:4}")
-            #
-            #     # print(new_list)
-            #
-            #     file.close()
-
-            # except OSError:
-            #     return
-
 
         elif "add".startswith(action):
-            # +----------------------------------------+
-            # |                                        |
-            # |  TODO: Implement "add" action.         |
-            # |                                        |
-            # +----------------------------------------+
-            ...
+            add_a_route(distance_data)
 
         elif "remove".startswith(action):
             # +----------------------------------------+
