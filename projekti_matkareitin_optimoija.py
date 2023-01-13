@@ -193,28 +193,48 @@ def distance_to_neighbour(data, departure, destination):
 #     return msg_to_print
 
 def display_routes(dict_routes):
-    
-    
-    line_length = 14
-    line_length_2 = 5
 
-    for key, payload in sorted(dict_routes.items()):
+    # MUUTTUJIEN ALUSTUKSET TIETOTYYPEITTÄIN AAKKOSJÄRJESTYKSESSÄ
 
-        print(f"Key: {key}, payload: {payload}")
+    # Kokonaisluvut
+    len_original_space_of_str_departures = 14
+    len_original_space_of_str_destinations = 14
+    len_original_space_of_str_distance = 5
+
+    for key_departures, payload_destinations in sorted(dict_routes.items()):
+
+        for key_destinations, payload_distance in \
+                sorted(payload_destinations.items()):
+
+            leftover_space_of_departures = \
+                len_original_space_of_str_departures - len(key_departures)
+
+            leftover_space_of_destinations = \
+                len_original_space_of_str_destinations - len(key_destinations)
+
+            leftover_space_of_distance = \
+                len_original_space_of_str_distance - len(payload_distance)
+
+            len_str_departures_with_spaces = key_departures + " " * \
+                                             leftover_space_of_departures
+            len_str_destinations_with_spaces = key_destinations + " " * \
+                                               leftover_space_of_destinations
+            len_str_distance_with_spaces = " " * leftover_space_of_distance + \
+                                           payload_distance
 
 
-        # str_key = str(key)
-        # leftover_lenght = line_length - len(str_key)
-        # str_payload = str(payload)
-        # print(str_key + " " * leftover_lenght + str_payload)
-
+            print(len_str_departures_with_spaces +
+                  len_str_destinations_with_spaces +
+                  len_str_distance_with_spaces)
 
 
 def main():
-
-# distances.txt
+    # distances.txt
 
     input_file = input("Enter input file name: ")
+
+    # distance_data sanakirja sisältää kaikki haulutut tiedot kaikista
+    # kaupungeista
     distance_data = read_distance_file(input_file)
 
     if distance_data is None:
@@ -229,12 +249,6 @@ def main():
             return
 
         elif "display".startswith(action):
-            # +----------------------------------------+
-            # |                                        |
-            # |  TODO: Implement "display" action.     |
-            # |                                        |
-            # +----------------------------------------+
-
             display_routes(distance_data)
 
             #
