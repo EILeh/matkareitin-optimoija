@@ -109,15 +109,9 @@ def read_distance_file(file_name):
             # Rivin kentät otetaan talteen omiin muuttujiinsa
             departure, destination, distance = line.split(";")
 
-            # Jos rivillä olevaa kaupunkia ei löydy sanakirjasta, luodaan
-            # sanakirjaan kokonaan uusi avain lähtökaupungin nimellä
-            if departure not in dict_file_contents:
-                dict_file_contents[departure] = {destination: distance}
+            add_routes_to_dict(departure, destination, distance,
+                               dict_file_contents)
 
-            # Jos lähtökaupunki löytyy jo sanakirjasta, päivitetään vain sieltä
-            # lähteviä reittejä
-            else:
-                dict_file_contents[departure][destination] = distance
 
         text_file.close()
 
@@ -194,7 +188,7 @@ def distance_to_neighbour(data, departure, destination):
 
 def display_routes(dict_routes):
     """
-    
+    LISÄÄÄ TÄHÄN JOTAIN HAUSKAA!!!
     :param dict_routes:
     :return:
     """
@@ -205,6 +199,9 @@ def display_routes(dict_routes):
     len_original_space_of_str_departures = 14
     len_original_space_of_str_destinations = 14
     len_original_space_of_str_distance = 5
+
+    # Merkkijonot
+    str_payload_distance = ""
 
     for key_departures, payload_destinations in sorted(dict_routes.items()):
 
@@ -217,15 +214,16 @@ def display_routes(dict_routes):
             leftover_space_of_destinations = \
                 len_original_space_of_str_destinations - len(key_destinations)
 
+            str_payload_distance = str(payload_distance)
             leftover_space_of_distance = \
-                len_original_space_of_str_distance - len(payload_distance)
+                len_original_space_of_str_distance - len(str_payload_distance)
 
             len_str_departures_with_spaces = key_departures + " " * \
                                              leftover_space_of_departures
             len_str_destinations_with_spaces = key_destinations + " " * \
                                                leftover_space_of_destinations
             len_str_distance_with_spaces = " " * leftover_space_of_distance + \
-                                           payload_distance
+                                           str_payload_distance
 
 
             print(len_str_departures_with_spaces +
@@ -233,9 +231,22 @@ def display_routes(dict_routes):
                   len_str_distance_with_spaces)
 
 
-def add_a_route(dict_routes):
-    """
+def add_routes_to_dict(departure, destination, distance, dict_routes):
 
+    # Jos rivillä olevaa kaupunkia ei löydy sanakirjasta, luodaan
+    # sanakirjaan kokonaan uusi avain lähtökaupungin nimellä
+    if departure not in dict_routes:
+        dict_routes[departure] = {destination: distance}
+
+    # Jos lähtökaupunki löytyy jo sanakirjasta, päivitetään vain sieltä
+    # lähteviä reittejä
+    else:
+        dict_routes[departure][destination] = distance
+
+
+def ask_for_a_route(dict_routes):
+    """
+    LISÄÄ TÄHÄN JOTAIN HAUSKAA!!
     :param dict_routes:
     :return:
     """
@@ -250,17 +261,24 @@ def add_a_route(dict_routes):
     destination_city = ""
     str_distance_between_cities = ""
 
-    departure_city = input("Enter departure city: ")
-    destination_city = input("Enter destination city: ")
+    # Kaupunkien nimien alkukirjaimet muutetaan isoiksi, jos ne eivät sitä ole.
+    # Tämä siksi, että tulostaminen aakkosjärjestyksessä display-funktiossa
+    # toimisi oikein.
+    departure_city = input("Enter departure city: ").title()
+    destination_city = input("Enter destination city: ").title()
     str_distance_between_cities = input("Distance: ")
 
+    # Etäisyys yritetään muuttaa kokonaisluvuksi.
     try:
         distance_between_cities = int(str_distance_between_cities)
 
+    # Jos kokonaisluvuksi muuttaminen ei onnistu, tulostuu virheilmoitus.
     except ValueError:
-
         print(f"{str_distance_between_cities} is not an integer.")
         return None
+
+    add_routes_to_dict(departure_city, destination_city,
+                       distance_between_cities, dict_routes)
 
 
 def main():
@@ -288,7 +306,7 @@ def main():
 
 
         elif "add".startswith(action):
-            add_a_route(distance_data)
+            ask_for_a_route(distance_data)
 
         elif "remove".startswith(action):
             # +----------------------------------------+
