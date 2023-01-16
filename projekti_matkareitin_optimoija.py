@@ -280,6 +280,34 @@ def ask_for_a_route(dict_routes):
     add_routes_to_dict(departure_city, destination_city,
                        distance_between_cities, dict_routes)
 
+def remove_route(dict_routes):
+    """
+    LISÄÄ TÄHÄN JOTAIN HAUSKAA
+    :param dict_routes:
+    :return:
+    """
+
+    departure_city = input("Enter departure city: ").title()
+
+    # Jos lähtökaupunkia ei löydy sanakirjasta, ei kysytä kohdekaupunkia vaan
+    # tulsotetaan suoraan error.
+    if departure_city not in dict_routes:
+        print(f"Error: '{departure_city}' is unknown.")
+        return
+
+    # Jos lähtökaupunki löytyi, kysytään kohdekaupunki.
+    destination_city = input("Enter destination city: ").title()
+
+    # Jos kohdekaupunkia ei ole sanakirjan hakuavaimessa eli lähtökaupungilla
+    # ei ole syötettyä kohdekaupunkia, tulostetaan error.
+    if destination_city not in dict_routes[departure_city]:
+        print(f"Error: missing road segment between '{departure_city}' and "
+              f"'{destination_city}'.")
+        return
+
+    # Jos sekä lähtö- että kohdekaupunki löytyvät, poistetaan niiden välinen
+    # reitti eli hakuavaimen ja hyötykuorman muodostama pari sanakirjasta.
+    del dict_routes[departure_city][destination_city]
 
 def main():
     # distances.txt
@@ -309,12 +337,7 @@ def main():
             ask_for_a_route(distance_data)
 
         elif "remove".startswith(action):
-            # +----------------------------------------+
-            # |                                        |
-            # |  TODO: Implement "remove" action.      |
-            # |                                        |
-            # +----------------------------------------+
-            ...
+            remove_route(distance_data)
 
         elif "neighbours".startswith(action):
             # +----------------------------------------+
