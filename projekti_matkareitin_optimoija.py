@@ -103,7 +103,6 @@ def read_distance_file(file_name):
         # omiin kenttiin ja laittaa arvoja sanakirjaan niin, että hakuavaimeksi
         # tulee rivin ensimmäinen kenttä eli haettava kaupunki.
         for line in text_file:
-
             line = line.strip()
 
             # Rivin kentät otetaan talteen omiin muuttujiinsa
@@ -111,7 +110,6 @@ def read_distance_file(file_name):
 
             add_routes_to_dict(departure, destination, distance,
                                dict_file_contents)
-
 
         text_file.close()
 
@@ -145,12 +143,25 @@ def fetch_neighbours(data, city):
              arrows leaving from the <city>.
     """
 
+    list_neighbouring_cities = []
+
     # Jos lähtökaupunkia ei löydy sanakirjasta
     if city not in data:
         print(f"Error: '{city}' is unknown.")
         return
 
+    # Toinen parametri city rajaa tulostuksen vain ko. kaupunkiin.
     display_routes(data, city)
+
+    # Hankitaan sisäkkäisillä silmukoilla kohdekaupungit sanakirjasta
+    # ja lisätään ne listalle, joka palautetaan kutsufunktiolle.
+    for key_departures, payload_destinations in sorted(data.items()):
+
+        for key_destinations, payload_distance in \
+                sorted(payload_destinations.items()):
+            list_neighbouring_cities.append(key_destinations)
+
+    return list_neighbouring_cities
 
 
 def distance_to_neighbour(data, departure, destination):
@@ -176,6 +187,7 @@ def distance_to_neighbour(data, departure, destination):
     # |                                                                   |
     # +-------------------------------------------------------------------+
 
+
 def display_routes(dict_routes, city=""):
     """
     LISÄÄÄ TÄHÄN JOTAIN HAUSKAA!!!
@@ -194,6 +206,7 @@ def display_routes(dict_routes, city=""):
     # Merkkijonot
     str_payload_distance = ""
 
+    #
     for key_departures, payload_destinations in sorted(dict_routes.items()):
 
         for key_destinations, payload_distance in \
@@ -215,6 +228,8 @@ def display_routes(dict_routes, city=""):
             len_str_distance_with_spaces = " " * leftover_space_of_distance + \
                                            str_payload_distance
 
+            # Jos lähtökaupunkia ei ole syötetty, tallennetaan reittien tiedot
+            # muuttujiin ja tulostetaan ne print_routes funktiossa.
             if city == "":
 
                 len_str_departures_with_spaces = key_departures + " " * \
@@ -223,15 +238,16 @@ def display_routes(dict_routes, city=""):
                              len_str_destinations_with_spaces,
                              len_str_distance_with_spaces)
 
-
+            # Jos lähtökaupunki syötetään, tallennetaan lähtökaupungin tiedot
+            # omaan muuttujaan ja tulostetaan lähtökaupunki ja sen
+            # naapurikaupungit print_routes funktiossa.
             elif key_departures == city:
                 len_str_city_with_spaces = city + " " * \
-                                                 leftover_space_of_departures
+                                           leftover_space_of_departures
 
                 print_routes(len_str_city_with_spaces,
                              len_str_destinations_with_spaces,
                              len_str_distance_with_spaces)
-
 
 
 def print_routes(departure, destinations, distance):
@@ -246,9 +262,7 @@ def print_routes(departure, destinations, distance):
     print(departure + destinations + distance)
 
 
-
 def add_routes_to_dict(departure, destination, distance, dict_routes):
-
     # Jos rivillä olevaa kaupunkia ei löydy sanakirjasta, luodaan
     # sanakirjaan kokonaan uusi avain lähtökaupungin nimellä
     if departure not in dict_routes:
@@ -296,6 +310,7 @@ def ask_for_a_route(dict_routes):
     add_routes_to_dict(departure_city, destination_city,
                        distance_between_cities, dict_routes)
 
+
 def remove_route(dict_routes):
     """
     LISÄÄ TÄHÄN JOTAIN HAUSKAA
@@ -324,6 +339,7 @@ def remove_route(dict_routes):
     # Jos sekä lähtö- että kohdekaupunki löytyvät, poistetaan niiden välinen
     # reitti eli hakuavaimen ja hyötykuorman muodostama pari sanakirjasta.
     del dict_routes[departure_city][destination_city]
+
 
 def main():
     # distances.txt
@@ -357,6 +373,7 @@ def main():
 
         elif "neighbours".startswith(action):
             city = input("Enter departure city: ")
+            # list = fetch_neighbours(distance_data, city)
             fetch_neighbours(distance_data, city)
 
         elif "route".startswith(action):
