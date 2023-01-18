@@ -152,13 +152,6 @@ def fetch_neighbours(data, city):
 
     display_routes(data, city)
 
-    # for:
-    #   for:
-        # if key == "city"
-        #   print()
-
-
-
 
 def distance_to_neighbour(data, departure, destination):
     """
@@ -183,17 +176,6 @@ def distance_to_neighbour(data, departure, destination):
     # |                                                                   |
     # +-------------------------------------------------------------------+
 
-
-# def get_print_string(msg_to_print, suffix):
-#
-#     line_lenght = 14
-#
-#     leftover_lenght = line_lenght - (len(msg_to_print) + len(suffix))
-#     if leftover_lenght > 0:
-#         msg_to_print = msg_to_print + " " * (leftover_lenght - 3) + suffix
-#
-#     return msg_to_print
-
 def display_routes(dict_routes, city=""):
     """
     LISÄÄÄ TÄHÄN JOTAIN HAUSKAA!!!
@@ -207,69 +189,61 @@ def display_routes(dict_routes, city=""):
     len_original_space_of_str_departures = 14
     len_original_space_of_str_destinations = 14
     len_original_space_of_str_distance = 5
+    len_str_departures_with_spaces = 0
 
     # Merkkijonot
     str_payload_distance = ""
 
+    for key_departures, payload_destinations in sorted(dict_routes.items()):
 
+        for key_destinations, payload_distance in \
+                sorted(payload_destinations.items()):
+            leftover_space_of_departures = \
+                len_original_space_of_str_departures - len(key_departures)
 
-    if city == "":
+            leftover_space_of_destinations = \
+                len_original_space_of_str_destinations - len(
+                    key_destinations)
 
-        for key_departures, payload_destinations in sorted(dict_routes.items()):
+            str_payload_distance = str(payload_distance)
+            leftover_space_of_distance = \
+                len_original_space_of_str_distance - len(
+                    str_payload_distance)
 
-            for key_destinations, payload_distance in \
-                    sorted(payload_destinations.items()):
+            len_str_destinations_with_spaces = key_destinations + " " * \
+                                               leftover_space_of_destinations
+            len_str_distance_with_spaces = " " * leftover_space_of_distance + \
+                                           str_payload_distance
 
-                leftover_space_of_departures = \
-                    len_original_space_of_str_departures - len(key_departures)
-
-                leftover_space_of_destinations = \
-                    len_original_space_of_str_destinations - len(key_destinations)
-
-                str_payload_distance = str(payload_distance)
-                leftover_space_of_distance = \
-                    len_original_space_of_str_distance - len(str_payload_distance)
+            if city == "":
 
                 len_str_departures_with_spaces = key_departures + " " * \
                                                  leftover_space_of_departures
-                len_str_destinations_with_spaces = key_destinations + " " * \
-                                                   leftover_space_of_destinations
-                len_str_distance_with_spaces = " " * leftover_space_of_distance + \
-                                               str_payload_distance
+                print_routes(len_str_departures_with_spaces,
+                             len_str_destinations_with_spaces,
+                             len_str_distance_with_spaces)
 
 
-                print(len_str_departures_with_spaces +
-                      len_str_destinations_with_spaces +
-                      len_str_distance_with_spaces)
+            elif key_departures == city:
+                len_str_city_with_spaces = city + " " * \
+                                                 leftover_space_of_departures
 
-    else:
-        for key_departures, payload_destinations in sorted(dict_routes.items()):
+                print_routes(len_str_city_with_spaces,
+                             len_str_destinations_with_spaces,
+                             len_str_distance_with_spaces)
 
-            for key_destinations, payload_distance in \
-                    sorted(payload_destinations.items()):
-                if key_departures == city:
-                    leftover_space_of_departures = \
-                        len_original_space_of_str_departures - len(key_departures)
 
-                    leftover_space_of_destinations = \
-                        len_original_space_of_str_destinations - len(
-                            key_destinations)
 
-                    str_payload_distance = str(payload_distance)
-                    leftover_space_of_distance = \
-                        len_original_space_of_str_distance - len(
-                            str_payload_distance)
+def print_routes(departure, destinations, distance):
+    """
+    jotaon hasua
+    :param departure:
+    :param destinations:
+    :param distance:
+    :return:
+    """
 
-                    len_str_departures_with_spaces = key_departures + " " * \
-                                                     leftover_space_of_departures
-                    len_str_destinations_with_spaces = key_destinations + " " * \
-                                                       leftover_space_of_destinations
-                    len_str_distance_with_spaces = " " * leftover_space_of_distance + \
-                                                   str_payload_distance
-
-                    print(len_str_departures_with_spaces +
-                          len_str_destinations_with_spaces +
-                          len_str_distance_with_spaces)
+    print(departure + destinations + distance)
 
 
 
