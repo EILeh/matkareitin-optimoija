@@ -145,11 +145,19 @@ def fetch_neighbours(data, city):
              arrows leaving from the <city>.
     """
 
-    # +--------------------------------------------------------------+
-    # |                                                              |
-    # |  TODO: Implement your own version of fetch_neighbours here.  |
-    # |                                                              |
-    # +--------------------------------------------------------------+
+    # Jos lähtökaupunkia ei löydy sanakirjasta
+    if city not in data:
+        print(f"Error: '{city}' is unknown.")
+        return
+
+    display_routes(data, city)
+
+    # for:
+    #   for:
+        # if key == "city"
+        #   print()
+
+
 
 
 def distance_to_neighbour(data, departure, destination):
@@ -186,7 +194,7 @@ def distance_to_neighbour(data, departure, destination):
 #
 #     return msg_to_print
 
-def display_routes(dict_routes):
+def display_routes(dict_routes, city=""):
     """
     LISÄÄÄ TÄHÄN JOTAIN HAUSKAA!!!
     :param dict_routes:
@@ -203,32 +211,66 @@ def display_routes(dict_routes):
     # Merkkijonot
     str_payload_distance = ""
 
-    for key_departures, payload_destinations in sorted(dict_routes.items()):
-
-        for key_destinations, payload_distance in \
-                sorted(payload_destinations.items()):
-
-            leftover_space_of_departures = \
-                len_original_space_of_str_departures - len(key_departures)
-
-            leftover_space_of_destinations = \
-                len_original_space_of_str_destinations - len(key_destinations)
-
-            str_payload_distance = str(payload_distance)
-            leftover_space_of_distance = \
-                len_original_space_of_str_distance - len(str_payload_distance)
-
-            len_str_departures_with_spaces = key_departures + " " * \
-                                             leftover_space_of_departures
-            len_str_destinations_with_spaces = key_destinations + " " * \
-                                               leftover_space_of_destinations
-            len_str_distance_with_spaces = " " * leftover_space_of_distance + \
-                                           str_payload_distance
 
 
-            print(len_str_departures_with_spaces +
-                  len_str_destinations_with_spaces +
-                  len_str_distance_with_spaces)
+    if city == "":
+
+        for key_departures, payload_destinations in sorted(dict_routes.items()):
+
+            for key_destinations, payload_distance in \
+                    sorted(payload_destinations.items()):
+
+                leftover_space_of_departures = \
+                    len_original_space_of_str_departures - len(key_departures)
+
+                leftover_space_of_destinations = \
+                    len_original_space_of_str_destinations - len(key_destinations)
+
+                str_payload_distance = str(payload_distance)
+                leftover_space_of_distance = \
+                    len_original_space_of_str_distance - len(str_payload_distance)
+
+                len_str_departures_with_spaces = key_departures + " " * \
+                                                 leftover_space_of_departures
+                len_str_destinations_with_spaces = key_destinations + " " * \
+                                                   leftover_space_of_destinations
+                len_str_distance_with_spaces = " " * leftover_space_of_distance + \
+                                               str_payload_distance
+
+
+                print(len_str_departures_with_spaces +
+                      len_str_destinations_with_spaces +
+                      len_str_distance_with_spaces)
+
+    else:
+        for key_departures, payload_destinations in sorted(dict_routes.items()):
+
+            for key_destinations, payload_distance in \
+                    sorted(payload_destinations.items()):
+                if key_departures == city:
+                    leftover_space_of_departures = \
+                        len_original_space_of_str_departures - len(key_departures)
+
+                    leftover_space_of_destinations = \
+                        len_original_space_of_str_destinations - len(
+                            key_destinations)
+
+                    str_payload_distance = str(payload_distance)
+                    leftover_space_of_distance = \
+                        len_original_space_of_str_distance - len(
+                            str_payload_distance)
+
+                    len_str_departures_with_spaces = key_departures + " " * \
+                                                     leftover_space_of_departures
+                    len_str_destinations_with_spaces = key_destinations + " " * \
+                                                       leftover_space_of_destinations
+                    len_str_distance_with_spaces = " " * leftover_space_of_distance + \
+                                                   str_payload_distance
+
+                    print(len_str_departures_with_spaces +
+                          len_str_destinations_with_spaces +
+                          len_str_distance_with_spaces)
+
 
 
 def add_routes_to_dict(departure, destination, distance, dict_routes):
@@ -340,21 +382,15 @@ def main():
             remove_route(distance_data)
 
         elif "neighbours".startswith(action):
-            # +----------------------------------------+
-            # |                                        |
-            # |  TODO: Implement "neighbours" action.  |
-            # |                                        |
-            # +----------------------------------------+
-            ...
+            city = input("Enter departure city: ")
+            fetch_neighbours(distance_data, city)
 
         elif "route".startswith(action):
-            # TODO: Implement "route" action.
-            # +----------------------------------------+
-            # |                                        |
-            # |  TODO: Implement "route" action.       |
-            # |                                        |
-            # +----------------------------------------+
-            ...
+            departure = input("Enter departure city: ")
+            destination = input("Enter destination city: ")
+
+            find_route(distance_data, departure, destination)
+
 
         else:
             print(f"Error: unknown action '{action}'.")
