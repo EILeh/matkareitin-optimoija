@@ -318,6 +318,9 @@ def remove_route(dict_routes):
     :return:
     """
 
+    # Käytetään string.title metodia aakkosjärjestyksen varmistamiseksi.
+    # Ilman tätä järjestäisi isot ja pienet kirjaimet "omiksi listoikseen"
+    # sorted:illa, ts. menetettäisiin oikea aakkosjärjestys.
     departure_city = input("Enter departure city: ").title()
 
     # Jos lähtökaupunkia ei löydy sanakirjasta, ei kysytä kohdekaupunkia vaan
@@ -361,9 +364,12 @@ def main():
             print("Done and done!")
             return
 
+        # Switch toimii kuten if, muttei vaadi vertailulauseen x == y
+        # toistamista jatkuvasti. Sen sijaan vaihtaa tapausta (engl. case)
+        # annetun syötteen perusteella.
+
         elif "display".startswith(action):
             display_routes(distance_data)
-
 
         elif "add".startswith(action):
             ask_for_a_route(distance_data)
@@ -381,7 +387,6 @@ def main():
             destination = input("Enter destination city: ")
 
             find_route(distance_data, departure, destination)
-
 
         else:
             print(f"Error: unknown action '{action}'.")
