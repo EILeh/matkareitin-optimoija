@@ -154,9 +154,10 @@ def fetch_neighbours(data, city):
     # ja lisätään ne listalle, joka palautetaan kutsufunktiolle.
     for key_departures, payload_destinations in sorted(data.items()):
 
-        for key_destinations, payload_distance in \
-                sorted(payload_destinations.items()):
-            list_neighbouring_cities.append(key_destinations)
+        if key_departures == city:
+            for key_destinations, payload_distance in \
+                    sorted(payload_destinations.items()):
+                list_neighbouring_cities.append(key_destinations)
 
     return list_neighbouring_cities
 
@@ -178,9 +179,16 @@ def distance_to_neighbour(data, departure, destination):
            between the two cities.
     """
 
-    route_pair = data.get(departure, destination)
-    print(f"route_pair: {route_pair}")
-    return
+    if {departure: destination} not in data.items():
+        return 0
+
+
+    str_distance = data[departure][destination]
+    int_distance = int(str_distance)
+
+    print("hasua")
+
+    return int_distance
 
     # {key_departures: {key_destinations: payload_distance}}
     #                            payload_destinations
@@ -404,7 +412,8 @@ def main():
                 continue
 
 
-            find_route(distance_data, departure, destination)
+            paluuarvo = find_route(distance_data, departure, destination)
+            print(f"Find route palautti seuraavan arvon: {paluuarvo}")
 
         else:
             print(f"Error: unknown action '{action}'.")
