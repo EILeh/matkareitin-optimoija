@@ -179,14 +179,12 @@ def distance_to_neighbour(data, departure, destination):
            between the two cities.
     """
 
-    if {departure: destination} not in data.items():
-        return 0
+    # if {departure: destination} not in data.items():
+    #     return 0
 
 
     str_distance = data[departure][destination]
     int_distance = int(str_distance)
-
-    print("hasua")
 
     return int_distance
 
@@ -250,9 +248,9 @@ def display_routes(dict_routes, city=""):
 
                 len_str_departures_with_spaces = key_departures + " " * \
                                                  leftover_space_of_departures
-                print_routes(len_str_departures_with_spaces,
-                             len_str_destinations_with_spaces,
-                             len_str_distance_with_spaces)
+                route_display(len_str_departures_with_spaces,
+                              len_str_destinations_with_spaces,
+                              len_str_distance_with_spaces)
 
             # Jos lähtökaupunki syötetään, tallennetaan lähtökaupungin tiedot
             # omaan muuttujaan ja tulostetaan lähtökaupunki ja sen
@@ -261,12 +259,12 @@ def display_routes(dict_routes, city=""):
                 len_str_city_with_spaces = city + " " * \
                                            leftover_space_of_departures
 
-                print_routes(len_str_city_with_spaces,
-                             len_str_destinations_with_spaces,
-                             len_str_distance_with_spaces)
+                route_display(len_str_city_with_spaces,
+                              len_str_destinations_with_spaces,
+                              len_str_distance_with_spaces)
 
 
-def print_routes(departure, destinations, distance):
+def route_display(departure, destinations, distance):
     """
     jotaon hasua
     :param departure:
@@ -360,6 +358,31 @@ def remove_route(dict_routes):
     del dict_routes[departure_city][destination_city]
 
 
+def calculate_route_distance(dict_routes, route):
+
+    route_distance = 0
+
+    for key_departures, payload_destinations in sorted(dict_routes.items()):
+        for key_destinations, payload_distance in \
+                sorted(payload_destinations.items()):
+            route_distance += int(payload_distance)
+
+    return route_distance
+
+# Mieti kannattaako kutsua tästä vai mainista print_route_distance():a
+
+def print_route_distance(dict_routes, lst_route, route_distance):
+
+    len_of_list = len(lst_route)
+
+    for city in range(0, len_of_list-1, 1):
+        print(f"{lst_route[city]}-", end="")
+
+    print(f"{lst_route[-1]} ({route_distance} km)")
+
+# Helsinki-Lahti-Jyväskylä-Oulu-Rovaniemi (833 km)
+
+
 def main():
     # distances.txt
 
@@ -411,9 +434,9 @@ def main():
                       f"'{destination}'.")
                 continue
 
-
-            paluuarvo = find_route(distance_data, departure, destination)
-            print(f"Find route palautti seuraavan arvon: {paluuarvo}")
+            route = find_route(distance_data, departure, destination)
+            route_distance = calculate_route_distance(distance_data, route)
+            print_route_distance(distance_data, route, route_distance)
 
         else:
             print(f"Error: unknown action '{action}'.")
