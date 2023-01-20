@@ -150,9 +150,6 @@ def fetch_neighbours(data, city):
         print(f"Error: '{city}' is unknown.")
         return
 
-    # Toinen parametri city rajaa tulostuksen vain ko. kaupunkiin.
-    display_routes(data, city)
-
     # Hankitaan sisäkkäisillä silmukoilla kohdekaupungit sanakirjasta
     # ja lisätään ne listalle, joka palautetaan kutsufunktiolle.
     for key_departures, payload_destinations in sorted(data.items()):
@@ -181,11 +178,22 @@ def distance_to_neighbour(data, departure, destination):
            between the two cities.
     """
 
-    # +-------------------------------------------------------------------+
-    # |                                                                   |
-    # |  TODO: Implement your own version of distance_to_neighbour here.  |
-    # |                                                                   |
-    # +-------------------------------------------------------------------+
+    route_pair = data.get(departure, destination)
+    print(f"route_pair: {route_pair}")
+    return
+
+    # {key_departures: {key_destinations: payload_distance}}
+    #                            payload_destinations
+
+
+
+
+    # for key_departures, payload_destinations in sorted(data.items()):
+    #     if key_departures == departure:
+    #     for key_destinations, payload_distance in \
+    #             sorted(payload_destinations.items()):
+    #         if key_destinations == destination:
+    #
 
 
 def display_routes(dict_routes, city=""):
@@ -379,12 +387,22 @@ def main():
 
         elif "neighbours".startswith(action):
             city = input("Enter departure city: ")
-            # list = fetch_neighbours(distance_data, city)
-            fetch_neighbours(distance_data, city)
+            # Toinen parametri city rajaa tulostuksen vain ko. kaupunkiin.
+            display_routes(distance_data, city)
 
         elif "route".startswith(action):
             departure = input("Enter departure city: ")
+
+            if departure not in distance_data:
+                print(f"Error: '{departure}' is unknown.")
+                continue
+
             destination = input("Enter destination city: ")
+            if destination not in distance_data:
+                print(f"No route found between '{departure}' and "
+                      f"'{destination}'.")
+                continue
+
 
             find_route(distance_data, departure, destination)
 
