@@ -277,6 +277,14 @@ def route_display(departure, destinations, distance):
 
 
 def add_routes_to_dict(departure, destination, distance, dict_routes):
+    """
+    fdsaf
+    :param departure:
+    :param destination:
+    :param distance:
+    :param dict_routes:
+    :return:
+    """
     # Jos rivillä olevaa kaupunkia ei löydy sanakirjasta, luodaan
     # sanakirjaan kokonaan uusi avain lähtökaupungin nimellä
     if departure not in dict_routes:
@@ -358,20 +366,83 @@ def remove_route(dict_routes):
     del dict_routes[departure_city][destination_city]
 
 
-def calculate_route_distance(dict_routes, route):
+def calculate_route_distance(dict_routes, list_route):
+    """
+    fsfdsa
+    :param dict_routes:
+    :param list_route:
+    :return:
+    """
+    #
 
-    route_distance = 0
+    # route_distance = 0
+    # key_destinations = ""
+    # key_departures = ""
+    # payload_distance = 0
+    # current_departure_city = 0
+    # current_destination_city = 1
 
-    for key_departures, payload_destinations in sorted(dict_routes.items()):
-        for key_destinations, payload_distance in \
-                sorted(payload_destinations.items()):
-            route_distance += int(payload_distance)
+    route_len = 0
+    len_of_list = len(list_route)
+    i = 0
 
-    return route_distance
+    while i < len_of_list:
+        if i == len_of_list-1:
+            break
+        else:
+            route_len += int(dict_routes[list_route[i]][list_route[i+1]])
+        i += 1
+
+    # for key_departures, payload_destinations in sorted(dict_routes.items()):
+    #     departure_city = list_route[current_departure_city]
+    #     destination_city = list_route[current_destination_city]
+    #     if departure_city in dict_routes:
+    #         for key_destinations, payload_distance in \
+    #                 sorted(payload_destinations.items()):
+    #             route_distance += int(payload_distance)
+    #     current_departure_city += 1
+    #     current_destination_city += 1
+
+    # for key_departures, payload_destinations in sorted(dict_routes.items()):
+    #     for i in list_route:
+    #         if key_departures in list_route:
+    #             key_destinations = key_departures
+    #
+    #             for key_destinations, payload_distance in \
+    #                     sorted(payload_destinations.items()):
+    #                 if key_destinations in list_route:
+    #                     # key_departures = key_destinations
+    #
+    #                     route_distance += int(payload_distance)
+    #                     key_departures = key_destinations
+                # key_departures = key_destinations
+    #
+    # for key_departures, payload_destinations in sorted(dict_routes.items()):
+    #     for key_destinations, payload_distance in \
+    #             sorted(payload_destinations.items()):
+    #         print("yeet")
+    #             # key_departures = key_destinations
+    #
+    #
+    # for i in list_route:
+    #
+    #     if i in dict_routes:
+    #         key_departures = i
+    #         route_distance += int(payload_distance)
+
+
+    return route_len
 
 # Mieti kannattaako kutsua tästä vai mainista print_route_distance():a
 
 def print_route_distance(dict_routes, lst_route, route_distance):
+    """
+    fdssdfs
+    :param dict_routes:
+    :param lst_route:
+    :param route_distance:
+    :return:
+    """
 
     len_of_list = len(lst_route)
 
