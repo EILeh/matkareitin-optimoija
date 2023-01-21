@@ -326,7 +326,7 @@ def ask_for_a_route(dict_routes):
 
     # Jos kokonaisluvuksi muuttaminen ei onnistu, tulostuu virheilmoitus.
     except ValueError:
-        print(f"{str_distance_between_cities} is not an integer.")
+        print(f"Error: {str_distance_between_cities} is not an integer.")
         return None
 
     add_routes_to_dict(departure_city, destination_city,
@@ -389,6 +389,9 @@ def calculate_route_distance(dict_routes, list_route):
     while i < len_of_list:
         if i == len_of_list-1:
             break
+        if list_route[0] == list_route[1]:
+            route_len = 0
+            return route_len
         else:
             route_len += int(dict_routes[list_route[i]][list_route[i+1]])
         i += 1
@@ -489,6 +492,9 @@ def main():
 
         elif "neighbours".startswith(action):
             city = input("Enter departure city: ")
+            if city not in distance_data:
+                print(f"Error: '{city}' is unknown.")
+                continue
             # Toinen parametri city rajaa tulostuksen vain ko. kaupunkiin.
             display_routes(distance_data, city)
 
