@@ -451,15 +451,15 @@ def print_route_distance(dict_routes, lst_route, route_distance,
     len_of_list = len(lst_route)
 
 
-    try:
-        for city in range(0, len_of_list-1, 1):
-            print(f"{lst_route[city]}-", end="")
+    # try:
+    for city in range(0, len_of_list-1, 1):
+        print(f"{lst_route[city]}-", end="")
 
-        print(f"{lst_route[-1]} ({route_distance} km)")
+    print(f"{lst_route[-1]} ({route_distance} km)")
 
-    except IndexError:
-        print(f"No route found between '{departure}' and "
-              f"'{destination}'.")
+    # except ValueError:
+    #     print(f"No route found between '{departure}' and "
+    #           f"'{destination}'.")
 
 
 
@@ -515,6 +515,7 @@ def main():
                 continue
 
             destination = input("Enter destination city: ")
+            
             if destination not in distance_data:
                 print(f"No route found between '{departure}' and "
                       f"'{destination}'.")
@@ -524,8 +525,6 @@ def main():
             #     print(f"No route found between '{departure} and "
             #           f"'{destination}'.")
             #     continue
-
-
 
             route = find_route(distance_data, departure, destination)
             route_distance = calculate_route_distance(distance_data, route)
