@@ -438,7 +438,8 @@ def calculate_route_distance(dict_routes, list_route):
 
 # Mieti kannattaako kutsua tästä vai mainista print_route_distance():a
 
-def print_route_distance(dict_routes, lst_route, route_distance):
+def print_route_distance(dict_routes, lst_route, route_distance,
+                         departure, destination):
     """
     fdssdfs
     :param dict_routes:
@@ -449,10 +450,20 @@ def print_route_distance(dict_routes, lst_route, route_distance):
 
     len_of_list = len(lst_route)
 
-    for city in range(0, len_of_list-1, 1):
-        print(f"{lst_route[city]}-", end="")
+    # departure = lst_route[0]
+    # destination = lst_route[-1]
 
-    print(f"{lst_route[-1]} ({route_distance} km)")
+    try:
+        for city in range(0, len_of_list-1, 1):
+            print(f"{lst_route[city]}-", end="")
+
+        print(f"{lst_route[-1]} ({route_distance} km)")
+
+    except IndexError:
+        print(f"No route found between '{departure}' and "
+              f"'{destination}'.")
+
+
 
 # Helsinki-Lahti-Jyväskylä-Oulu-Rovaniemi (833 km)
 
@@ -511,16 +522,16 @@ def main():
                       f"'{destination}'.")
                 continue
 
-            elif destination not in distance_data[departure]:
-                print(f"No route found between '{departure} and "
-                      f"'{destination}'.")
-                continue
+            # elif destination not in distance_data[destination]:
+            #     print(f"No route found between '{departure} and "
+            #           f"'{destination}'.")
+            #     continue
 
 
 
             route = find_route(distance_data, departure, destination)
             route_distance = calculate_route_distance(distance_data, route)
-            print_route_distance(distance_data, route, route_distance)
+            print_route_distance(distance_data, route, route_distance, departure, destination)
 
         else:
             print(f"Error: unknown action '{action}'.")
