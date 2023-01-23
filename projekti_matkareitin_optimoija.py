@@ -326,7 +326,7 @@ def ask_for_a_route(dict_routes):
 
     # Jos kokonaisluvuksi muuttaminen ei onnistu, tulostuu virheilmoitus.
     except ValueError:
-        print(f"Error: {str_distance_between_cities} is not an integer.")
+        print(f"Error: '{str_distance_between_cities}' is not an integer.")
         return None
 
     add_routes_to_dict(departure_city, destination_city,
@@ -510,6 +510,13 @@ def main():
                 print(f"No route found between '{departure}' and "
                       f"'{destination}'.")
                 continue
+
+            elif destination not in distance_data[departure]:
+                print(f"No route found between '{departure} and "
+                      f"'{destination}'.")
+                continue
+
+
 
             route = find_route(distance_data, departure, destination)
             route_distance = calculate_route_distance(distance_data, route)
