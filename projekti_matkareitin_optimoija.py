@@ -146,9 +146,9 @@ def fetch_neighbours(data, city):
     list_neighbouring_cities = []
 
     # Jos lähtökaupunkia ei löydy sanakirjasta
-    if city not in data:
-        print(f"Error: '{city}' is unknown.")
-        return
+    # if city not in data:
+    #     print(f"Error: '{city}' is unknown.")
+    #     return
 
     # Hankitaan sisäkkäisillä silmukoilla kohdekaupungit sanakirjasta
     # ja lisätään ne listalle, joka palautetaan kutsufunktiolle.
@@ -450,8 +450,6 @@ def print_route_distance(dict_routes, lst_route, route_distance,
 
     len_of_list = len(lst_route)
 
-    # departure = lst_route[0]
-    # destination = lst_route[-1]
 
     try:
         for city in range(0, len_of_list-1, 1):
