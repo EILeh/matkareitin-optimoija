@@ -318,6 +318,10 @@ def ask_for_a_route(dict_routes):
     # toimisi oikein.
     departure_city = input("Enter departure city: ").title()
     destination_city = input("Enter destination city: ").title()
+
+    if destination_city not in dict_routes:
+        dict_routes[destination_city] = {}
+
     str_distance_between_cities = input("Distance: ")
 
     # Etäisyys yritetään muuttaa kokonaisluvuksi.
@@ -450,18 +454,11 @@ def print_route_distance(dict_routes, lst_route, route_distance,
 
     len_of_list = len(lst_route)
 
-
     # try:
     for city in range(0, len_of_list-1, 1):
         print(f"{lst_route[city]}-", end="")
 
     print(f"{lst_route[-1]} ({route_distance} km)")
-
-    # except ValueError:
-    #     print(f"No route found between '{departure}' and "
-    #           f"'{destination}'.")
-
-
 
 # Helsinki-Lahti-Jyväskylä-Oulu-Rovaniemi (833 km)
 
@@ -500,7 +497,7 @@ def main():
             remove_route(distance_data)
 
         elif "neighbours".startswith(action):
-            city = input("Enter departure city: ")
+            city = input("Enter departure city: ").title()
             if city not in distance_data:
                 print(f"Error: '{city}' is unknown.")
                 continue
@@ -508,25 +505,23 @@ def main():
             display_routes(distance_data, city)
 
         elif "route".startswith(action):
-            departure = input("Enter departure city: ")
+            departure = input("Enter departure city: ").title()
 
             if departure not in distance_data:
                 print(f"Error: '{departure}' is unknown.")
                 continue
 
-            destination = input("Enter destination city: ")
-            
-            if destination not in distance_data:
-                print(f"No route found between '{departure}' and "
-                      f"'{destination}'.")
-                continue
-
-            # elif destination not in distance_data[destination]:
-            #     print(f"No route found between '{departure} and "
-            #           f"'{destination}'.")
-            #     continue
+            destination = input("Enter destination city: ").title()
 
             route = find_route(distance_data, departure, destination)
+
+            # Tarkistaa, oliko paluuarvo false. Listojen kanssa false
+            # tarkoittaa, että route oli tyhjä.
+            if not route:
+                print(f"No route found between '{departure}' and '"
+                      f"{destination}'.")
+                continue
+
             route_distance = calculate_route_distance(distance_data, route)
             print_route_distance(distance_data, route, route_distance, departure, destination)
 
