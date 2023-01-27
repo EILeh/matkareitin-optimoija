@@ -182,27 +182,12 @@ def distance_to_neighbour(data, departure, destination):
     # if {departure: destination} not in data.items():
     #     return 0
 
-
     str_distance = data[departure][destination]
     int_distance = int(str_distance)
 
     return int_distance
 
-    # {key_departures: {key_destinations: payload_distance}}
-    #                            payload_destinations
-
-
-
-
-    # for key_departures, payload_destinations in sorted(data.items()):
-    #     if key_departures == departure:
-    #     for key_destinations, payload_distance in \
-    #             sorted(payload_destinations.items()):
-    #         if key_destinations == destination:
-    #
-
-
-def display_routes(dict_routes, city=""):
+def command_display(dict_routes, city=""):
     """
     LISÄÄÄ TÄHÄN JOTAIN HAUSKAA!!!
     :param dict_routes:
@@ -287,7 +272,7 @@ def add_routes_to_dict(departure, destination, distance, dict_routes):
     """
     # Jos rivillä olevaa kaupunkia ei löydy sanakirjasta, luodaan
     # sanakirjaan kokonaan uusi avain lähtökaupungin nimellä
-    if departure not in dict_routes:
+    if not city_in_dict_routes(departure, dict_routes):
         dict_routes[departure] = {destination: distance}
 
     # Jos lähtökaupunki löytyy jo sanakirjasta, päivitetään vain sieltä
@@ -296,7 +281,7 @@ def add_routes_to_dict(departure, destination, distance, dict_routes):
         dict_routes[departure][destination] = distance
 
 
-def ask_for_a_route(dict_routes):
+def command_add(dict_routes):
     """
     LISÄÄ TÄHÄN JOTAIN HAUSKAA!!
     :param dict_routes:
@@ -319,7 +304,7 @@ def ask_for_a_route(dict_routes):
     departure_city = input("Enter departure city: ").title()
     destination_city = input("Enter destination city: ").title()
 
-    if destination_city not in dict_routes:
+    if not city_in_dict_routes(destination_city, dict_routes):
         dict_routes[destination_city] = {}
 
     str_distance_between_cities = input("Distance: ")
@@ -337,7 +322,7 @@ def ask_for_a_route(dict_routes):
                        distance_between_cities, dict_routes)
 
 
-def remove_route(dict_routes):
+def command_remove(dict_routes):
     """
     LISÄÄ TÄHÄN JOTAIN HAUSKAA
     :param dict_routes:
@@ -351,7 +336,7 @@ def remove_route(dict_routes):
 
     # Jos lähtökaupunkia ei löydy sanakirjasta, ei kysytä kohdekaupunkia vaan
     # tulsotetaan suoraan error.
-    if departure_city not in dict_routes:
+    if not city_in_dict_routes(departure_city, dict_routes):
         print(f"Error: '{departure_city}' is unknown.")
         return
 
@@ -360,7 +345,8 @@ def remove_route(dict_routes):
 
     # Jos kohdekaupunkia ei ole sanakirjan hakuavaimessa eli lähtökaupungilla
     # ei ole syötettyä kohdekaupunkia, tulostetaan error.
-    if destination_city not in dict_routes[departure_city]:
+
+    if not city_in_dict_routes(dict_routes[departure_city], dict_routes):
         print(f"Error: missing road segment between '{departure_city}' and "
               f"'{destination_city}'.")
         return
@@ -379,13 +365,6 @@ def calculate_route_distance(dict_routes, list_route):
     """
     #
 
-    # route_distance = 0
-    # key_destinations = ""
-    # key_departures = ""
-    # payload_distance = 0
-    # current_departure_city = 0
-    # current_destination_city = 1
-
     route_len = 0
     len_of_list = len(list_route)
     i = 0
@@ -400,45 +379,8 @@ def calculate_route_distance(dict_routes, list_route):
             route_len += int(dict_routes[list_route[i]][list_route[i+1]])
         i += 1
 
-    # for key_departures, payload_destinations in sorted(dict_routes.items()):
-    #     departure_city = list_route[current_departure_city]
-    #     destination_city = list_route[current_destination_city]
-    #     if departure_city in dict_routes:
-    #         for key_destinations, payload_distance in \
-    #                 sorted(payload_destinations.items()):
-    #             route_distance += int(payload_distance)
-    #     current_departure_city += 1
-    #     current_destination_city += 1
-
-    # for key_departures, payload_destinations in sorted(dict_routes.items()):
-    #     for i in list_route:
-    #         if key_departures in list_route:
-    #             key_destinations = key_departures
-    #
-    #             for key_destinations, payload_distance in \
-    #                     sorted(payload_destinations.items()):
-    #                 if key_destinations in list_route:
-    #                     # key_departures = key_destinations
-    #
-    #                     route_distance += int(payload_distance)
-    #                     key_departures = key_destinations
-                # key_departures = key_destinations
-    #
-    # for key_departures, payload_destinations in sorted(dict_routes.items()):
-    #     for key_destinations, payload_distance in \
-    #             sorted(payload_destinations.items()):
-    #         print("yeet")
-    #             # key_departures = key_destinations
-    #
-    #
-    # for i in list_route:
-    #
-    #     if i in dict_routes:
-    #         key_departures = i
-    #         route_distance += int(payload_distance)
-
-
     return route_len
+
 
 # Mieti kannattaako kutsua tästä vai mainista print_route_distance():a
 
@@ -458,9 +400,51 @@ def print_route_distance(dict_routes, lst_route, route_distance,
     for city in range(0, len_of_list-1, 1):
         print(f"{lst_route[city]}-", end="")
 
-    print(f"{lst_route[-1]} ({route_distance} km)")
+    print(f"{departure} ({route_distance} km)")
 
 # Helsinki-Lahti-Jyväskylä-Oulu-Rovaniemi (833 km)
+
+
+def command_neighbours(distance_data):
+    """
+
+    :param distance_data:
+    :return:
+    """
+
+    city = input("Enter departure city: ").title()
+    if not city_in_dict_routes(city, distance_data):
+        print(f"Error: '{city}' is unknown.")
+
+    # Toinen parametri city rajaa tulostuksen vain ko. kaupunkiin.
+    command_display(distance_data, city)
+
+def city_in_dict_routes(city, dict_routes):
+
+    if city not in dict_routes:
+        return False
+
+    return True
+
+
+def command_route(distance_data):
+    departure = input("Enter departure city: ").title()
+
+    if not city_in_dict_routes(departure, distance_data):
+        print(f"Error: '{departure}' is unknown.")
+
+    destination = input("Enter destination city: ").title()
+
+    route = find_route(distance_data, departure, destination)
+
+    if not route:
+        print(f"No route found between '{departure}' and '"
+              f"{destination}'.")
+        return
+
+    route_distance = calculate_route_distance(distance_data, route)
+    print_route_distance(distance_data, route, route_distance, departure,
+                         destination)
 
 
 def main():
@@ -488,42 +472,19 @@ def main():
         # annetun syötteen perusteella.
 
         elif "display".startswith(action):
-            display_routes(distance_data)
+            command_display(distance_data)
 
         elif "add".startswith(action):
-            ask_for_a_route(distance_data)
+            command_add(distance_data)
 
         elif "remove".startswith(action):
-            remove_route(distance_data)
+            command_remove(distance_data)
 
         elif "neighbours".startswith(action):
-            city = input("Enter departure city: ").title()
-            if city not in distance_data:
-                print(f"Error: '{city}' is unknown.")
-                continue
-            # Toinen parametri city rajaa tulostuksen vain ko. kaupunkiin.
-            display_routes(distance_data, city)
+            command_neighbours(distance_data)
 
         elif "route".startswith(action):
-            departure = input("Enter departure city: ").title()
-
-            if departure not in distance_data:
-                print(f"Error: '{departure}' is unknown.")
-                continue
-
-            destination = input("Enter destination city: ").title()
-
-            route = find_route(distance_data, departure, destination)
-
-            # Tarkistaa, oliko paluuarvo false. Listojen kanssa false
-            # tarkoittaa, että route oli tyhjä.
-            if not route:
-                print(f"No route found between '{departure}' and '"
-                      f"{destination}'.")
-                continue
-
-            route_distance = calculate_route_distance(distance_data, route)
-            print_route_distance(distance_data, route, route_distance, departure, destination)
+            command_route(distance_data)
 
         else:
             print(f"Error: unknown action '{action}'.")
