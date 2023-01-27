@@ -534,7 +534,6 @@ def command_route(distance_data):
     departure = ""
     destination = ""
 
-
     departure = input("Enter departure city: ").title()
 
     # Jos lähtökaupunkia ei löydy sanakirjasta, tulostetaan error.
