@@ -1,10 +1,30 @@
 """
-COMP.CS.100 Ohjelmointi 1 / Programming 1
-Student Id: 0123456
-Name:       Xxxx Yyyyyy
-Email:      xxxx.yyyyyy@tuni.fi
+COMP.CS.100 Ohjelmointi 1
+3. projekti
 
-Project 3: ...
+Tekijä 1: Elli Lehtimäki
+Opiskelijanumero: 151309919
+
+Tekijä 2: Eetu Kuittinen
+Opiskelijanumero: 150541820
+
+Ohjelma tutkii kaupunkien välisiä etäisyyksiä ja niiden välisiä reittejä.
+Ohjelman käyttöä varten tarvitaan CSV-muodossa formatoitu TXT-tiedosto.
+Ohjelman alussa ohjelma yrittää avata tätä tiedostoa ohjelman ajokansiosta.
+Mikäli avaaminen epäonnistuu, tulostuu poikkeuskäsittelyssä virheviesti ja
+ohjelma suljetaan. Jos tiedoston avaaminen puolestaan onnistuu, sen sisältö
+lisätään silmukassa rivi riviltä sanakirjaan.
+
+Ohjelman tietorakenne on sisäkkäinen sanakirja, ts. sanakirja,
+jonka hyötykuormana on toinen sanakirja. Arvot luetaan sanakirjaan niin, että
+uloin avain on lähtökaupunki, sisemmän sanakirjan avain on kohdekaupunki ja
+sisemmän sanakirjan hyötykuorma on näiden välinen etäisyys.
+
+Ohjelmassa on lukuisia toimintoja. Se osaa mm. etsiä reittejä, lisätä uusia
+reittejä, poistaa vanhoja reittejä kuin myös selvittää reittien olemassaoloa.
+Suurimpaan osaan näistä operaatioista käytetään vain edellä mainittua
+sanakirjaa, mutta välillä käytetään myös listaa, kuten halutun reitin
+kaupunkien listaamiseen ja läpikäymiseen.
 """
 
 
@@ -22,7 +42,7 @@ def find_route(data, departure, destination):
     reason the route does not exist, the return value is
     an empty list [].
 
-    :param data: ?????, A data structure of an unspecified type (you decide)
+    :param data: dict, A data structure of an unspecified type (you decide)
            which contains the distance information between the cities.
     :param departure: str, the name of the departure city.
     :param destination: str, the name of the destination city.
@@ -93,6 +113,14 @@ def read_distance_file(file_name):
              long as all the required operations can be implemented using it.
     """
 
+    # MUUTTUJIEN ALUSTUKSET TIETOTYYPEITTÄIN AAKKOSJÄRJESTYKSESSÄ
+
+    # Merkkijonot
+    departure = ""
+    destination = ""
+    distance = ""
+
+    # Sanakirjat
     dict_file_contents = {}
 
     try:
@@ -105,7 +133,7 @@ def read_distance_file(file_name):
         for line in text_file:
             line = line.strip()
 
-            # Rivin kentät otetaan talteen omiin muuttujiinsa
+            # Rivin kentät otetaan talteen omiin muuttujiinsa.
             departure, destination, distance = line.split(";")
 
             add_routes_to_dict(departure, destination, distance,
@@ -113,11 +141,11 @@ def read_distance_file(file_name):
 
         text_file.close()
 
-    # Tiedoston luku epäonnistuu
+    # Tiedoston luku epäonnistuu.
     except OSError:
         return None
 
-    # Rivi ei noudata haluttua muotoilua (lähtökaupunki;kohdekaupunki;etäisyys)
+    # Rivi ei noudata haluttua muotoilua (lähtökaupunki;kohdekaupunki;etäisyys).
     except ValueError:
         return None
 
@@ -133,7 +161,7 @@ def fetch_neighbours(data, city):
     an empty list [], if <city> is unknown or if there are no
     arrows leaving from <city>.
 
-    :param data: ?????, A data structure containing the distance
+    :param data: dict, A data structure containing the distance
            information between the known cities.
     :param city: str, the name of the city whose neighbours we
            are interested in.
@@ -143,12 +171,10 @@ def fetch_neighbours(data, city):
              arrows leaving from the <city>.
     """
 
-    list_neighbouring_cities = []
+    # MUUTTUJIEN ALUSTUKSET TIETOTYYPEITTÄIN AAKKOSJÄRJESTYKSESSÄ
 
-    # Jos lähtökaupunkia ei löydy sanakirjasta
-    # if city not in data:
-    #     print(f"Error: '{city}' is unknown.")
-    #     return
+    # Listat
+    list_neighbouring_cities = []
 
     # Hankitaan sisäkkäisillä silmukoilla kohdekaupungit sanakirjasta
     # ja lisätään ne listalle, joka palautetaan kutsufunktiolle.
@@ -170,7 +196,7 @@ def distance_to_neighbour(data, departure, destination):
     if there is no arrow leading from <departure> city to
     <destination> city.
 
-    :param data: ?????, A data structure containing the distance
+    :param data: dict, A data structure containing the distance
            information between the known cities.
     :param departure: str, the name of the departure city.
     :param destination: str, the name of the destination city.
@@ -179,33 +205,44 @@ def distance_to_neighbour(data, departure, destination):
            between the two cities.
     """
 
-    # if {departure: destination} not in data.items():
-    #     return 0
+    # MUUTTUJIEN ALUSTUKSET TIETOTYYPEITTÄIN AAKKOSJÄRJESTYKSESSÄ
 
-    str_distance = data[departure][destination]
-    int_distance = int(str_distance)
+    # Kokonaisluvut
+    int_distance = 0
+
+    # Haetaan etäisyys sanakirjasta, jossa se on sisin hyötykuorma, muunnetaan
+    # se kokonaisluvuksi ja tallennetaan muuttujaan.
+    int_distance = int(data[departure][destination])
 
     return int_distance
 
+
 def command_display(dict_routes, city=""):
     """
-    LISÄÄÄ TÄHÄN JOTAIN HAUSKAA!!!
-    :param dict_routes:
-    :return:
+    Etsii tiedot kaupunkien nimien merkkimääristä, jotta ne voidaan tulostaa
+    halutussa muodossa funktiossa display_a_route.
+    :param dict_routes: dict, sisältää tiedon kaupungeista ja niiden välisistä
+           etäisyyksistä
+    :param city: str, sisältää tiedon kaupungista
+    :return: Python palauttaa implisiittisesti None-arvon
     """
 
     # MUUTTUJIEN ALUSTUKSET TIETOTYYPEITTÄIN AAKKOSJÄRJESTYKSESSÄ
 
     # Kokonaisluvut
+    leftover_space_of_departures = 0
+    leftover_space_of_destinations = 0
+    leftover_space_of_distance = 0
     len_original_space_of_str_departures = 14
     len_original_space_of_str_destinations = 14
     len_original_space_of_str_distance = 5
-    len_str_departures_with_spaces = 0
 
     # Merkkijonot
     str_payload_distance = ""
 
-    #
+    # Hankitaan sisäkkäisillä silmukoilla tiedot kaupungeista ja haetaan
+    # tieto jokaisen kaupungin kohdalla siitä, kuinka monta välilyöntiä
+    # tulostukseen haltutaan.
     for key_departures, payload_destinations in sorted(dict_routes.items()):
 
         for key_destinations, payload_distance in \
@@ -233,9 +270,9 @@ def command_display(dict_routes, city=""):
 
                 len_str_departures_with_spaces = key_departures + " " * \
                                                  leftover_space_of_departures
-                route_display(len_str_departures_with_spaces,
-                              len_str_destinations_with_spaces,
-                              len_str_distance_with_spaces)
+                display_a_route(len_str_departures_with_spaces,
+                                len_str_destinations_with_spaces,
+                                len_str_distance_with_spaces)
 
             # Jos lähtökaupunki syötetään, tallennetaan lähtökaupungin tiedot
             # omaan muuttujaan ja tulostetaan lähtökaupunki ja sen
@@ -244,48 +281,55 @@ def command_display(dict_routes, city=""):
                 len_str_city_with_spaces = city + " " * \
                                            leftover_space_of_departures
 
-                route_display(len_str_city_with_spaces,
-                              len_str_destinations_with_spaces,
-                              len_str_distance_with_spaces)
+                display_a_route(len_str_city_with_spaces,
+                                len_str_destinations_with_spaces,
+                                len_str_distance_with_spaces)
 
 
-def route_display(departure, destinations, distance):
+def display_a_route(str_departure, str_destination, str_distance):
     """
-    jotaon hasua
-    :param departure:
-    :param destinations:
-    :param distance:
-    :return:
+    Tulostaa kaupungit halutussa muodossa.
+    :param str_departure: str, lähtökaupungin nimen merkkien määrä
+           kaupunkikohtaisesti ja välilyönnit merkkien määrästä riippuen
+    :param str_destination: str, kohdekaupungin nimen merkkien määrä
+           kaupunkikohtaisesti ja välilyönnit merkkien määrästä riippuen
+    :param str_distance: str, etäisyyden merkkien määrä ja välilyönnit merkkien
+           määrästä riippuen
+    :return: Python palauttaa implisiittisesti None-arvon.
     """
 
-    print(departure + destinations + distance)
+    print(str_departure + str_destination + str_distance)
 
 
 def add_routes_to_dict(departure, destination, distance, dict_routes):
     """
-    fdsaf
-    :param departure:
-    :param destination:
-    :param distance:
-    :param dict_routes:
-    :return:
+    Tarkistaa löytyykö lähtökaupunki sanakirjasta, ja lisää syötetyn
+    lähtökaupungin, kohdekaupungin ja niiden välisen etäisyyden sanakirjaan.
+    Jos lähtökaupunki löytyy jo sanakirjasta, lisätään uusi reitti syötettyyn
+    kohdekaupunkiin.
+    :param departure: str, käyttäjän syöttämä lähtökaupunki
+    :param destination: str, käyttäjän syöttämä kohdekaupunki
+    :param distance: int, käyttäjän syöttämä etäisyys
+    :param dict_routes: dict, sisältää tiedon kaupungeista
+    :return: Python palauttaa implisiittisesti None-arvon
     """
+
     # Jos rivillä olevaa kaupunkia ei löydy sanakirjasta, luodaan
-    # sanakirjaan kokonaan uusi avain lähtökaupungin nimellä
+    # sanakirjaan kokonaan uusi avain lähtökaupungin nimellä.
     if not city_in_dict_routes(departure, dict_routes):
         dict_routes[departure] = {destination: distance}
 
     # Jos lähtökaupunki löytyy jo sanakirjasta, päivitetään vain sieltä
-    # lähteviä reittejä
+    # lähteviä reittejä.
     else:
         dict_routes[departure][destination] = distance
 
 
 def command_add(dict_routes):
     """
-    LISÄÄ TÄHÄN JOTAIN HAUSKAA!!
-    :param dict_routes:
-    :return:
+    Kysyy käyttäjältä kaupungit ja niiden välisen etäisyyden.
+    :param dict_routes: dict, sisältää reitit
+    :return: Python palauttaa implisiittisesti None-arvon
     """
 
     # MUUTTUJIEN ALUSTUKSET TIETOTYYPEITTÄIN AAKKOSJÄRJESTYKSESSÄ
@@ -304,9 +348,17 @@ def command_add(dict_routes):
     departure_city = input("Enter departure city: ").title()
     destination_city = input("Enter destination city: ").title()
 
+    # Tarkistaa löytyykö kohdekaupunki sanakirjasta
     if not city_in_dict_routes(destination_city, dict_routes):
+
+        # Kohdekaupunki lisätään sanakirjaan tyhjällä hyötykuormalla. Tämä teh-
+        # dään siksi, että if in toimisi muualla ohjelmassa oikein, sillä in
+        # katsoo vain avaimia, mutta kaupunki voi olla myös pelkkä hyötykuorma.
         dict_routes[destination_city] = {}
 
+    # Etäisyys otetaan aluksi vastaan merkkijonona, jotta voidaaan tarkistaa,
+    # sisältääkö syöte kelvottomia arvoja eli tässä tapauksessa muita kuin
+    # numeroita.
     str_distance_between_cities = input("Distance: ")
 
     # Etäisyys yritetään muuttaa kokonaisluvuksi.
@@ -318,24 +370,32 @@ def command_add(dict_routes):
         print(f"Error: '{str_distance_between_cities}' is not an integer.")
         return None
 
+    # Jos etäisyys oli kokoniasluku, kutsutaan funktiota reitin lisäämiseksi
+    # sanakirjaan.
     add_routes_to_dict(departure_city, destination_city,
                        distance_between_cities, dict_routes)
 
 
 def command_remove(dict_routes):
     """
-    LISÄÄ TÄHÄN JOTAIN HAUSKAA
-    :param dict_routes:
-    :return:
+    Kysyy reitin, joka halutaan poistaa. Jos lähtökaupunki on tuntematon tai
+    reittiä ei löydy, tulostetaan virheilmoitus.
+    :param dict_routes: dict, sisältää tiedon kaupungeista
+    :return: Palataan pois funktiosta (= palautuu None-arvo).
     """
+    # MUUTTUJIEN ALUSTUKSET TIETOTYYPEITTÄIN AAKKOSJÄRJESTYKSESSÄ
 
-    # Käytetään string.title metodia aakkosjärjestyksen varmistamiseksi.
+    # Merkkijonot
+    departure_city = ""
+    destination_city = ""
+
+    # Käytetään string.title() metodia aakkosjärjestyksen varmistamiseksi.
     # Ilman tätä järjestäisi isot ja pienet kirjaimet "omiksi listoikseen"
     # sorted:illa, ts. menetettäisiin oikea aakkosjärjestys.
     departure_city = input("Enter departure city: ").title()
 
     # Jos lähtökaupunkia ei löydy sanakirjasta, ei kysytä kohdekaupunkia vaan
-    # tulsotetaan suoraan error.
+    # tulostetaan suoraan error.
     if not city_in_dict_routes(departure_city, dict_routes):
         print(f"Error: '{departure_city}' is unknown.")
         return
@@ -345,8 +405,7 @@ def command_remove(dict_routes):
 
     # Jos kohdekaupunkia ei ole sanakirjan hakuavaimessa eli lähtökaupungilla
     # ei ole syötettyä kohdekaupunkia, tulostetaan error.
-
-    if not city_in_dict_routes(dict_routes[departure_city], dict_routes):
+    if destination_city not in dict_routes[departure_city]:
         print(f"Error: missing road segment between '{departure_city}' and "
               f"'{destination_city}'.")
         return
@@ -358,68 +417,97 @@ def command_remove(dict_routes):
 
 def calculate_route_distance(dict_routes, list_route):
     """
-    fsfdsa
-    :param dict_routes:
-    :param list_route:
-    :return:
+    Laskee kaupunkien välisen etäisyyden ja palauttaa tiedon reitin pituudesta.
+    :param dict_routes: dict, sisältää tiedon kaikista kaupungeista
+    :param list_route: list, sisältää tiedon reitin kaupungeista
+    :return: int, palauttaa reitin pituuden
     """
-    #
 
-    route_len = 0
-    len_of_list = len(list_route)
-    i = 0
+    # MUUTTUJIEN ALUSTUKSET TIETOTYYPEITTÄIN AAKKOSJÄRJESTYKSESSÄ
 
-    while i < len_of_list:
-        if i == len_of_list-1:
-            break
+    # Kokonaisluvut
+    city_at_index = 0
+    list_length = len(list_route)
+    route_length = 0
+
+    # Ottaa lähtökaupungiksi kaupungin kyseisellä indeksillä sekä
+    # kohdekaupungiksi kaupungin, joka on seuraavassa indeksissä. Korottaa
+    # indeksiä yhdellä joka kierroksella, jolloin aiempi kohdekaupunki on uusi
+    # lähtökaupunki, kunnes indeksi on yhden pienempi kuin listan pituus on, eli
+    # viimeinen indeksi (pituus on yhden suurempi).
+    # Palauttaa reitin pituuden.
+    while city_at_index < list_length-1:
+
+        # Jos lähtökaupunki on sama kuin kohdekaupunki, palautetaan reitin
+        # pituus nollana.
         if list_route[0] == list_route[1]:
-            route_len = 0
-            return route_len
+            route_length = 0
+            return route_length
         else:
-            route_len += int(dict_routes[list_route[i]][list_route[i+1]])
-        i += 1
+            route_length += int(dict_routes[list_route[city_at_index]]
+                                [list_route[city_at_index + 1]])
 
-    return route_len
+        city_at_index += 1
+
+    return route_length
 
 
-# Mieti kannattaako kutsua tästä vai mainista print_route_distance():a
-
-def print_route_distance(dict_routes, lst_route, route_distance,
-                         departure, destination):
+def print_route_distance(list_route, route_distance, destination):
     """
-    fdssdfs
-    :param dict_routes:
-    :param lst_route:
-    :param route_distance:
-    :return:
+    Tulostaa syötetyt lähtö- ja kohdekaupungit halutussa muodossa sekä niiden
+    välisen etäisyyden.
+    :param list_route: list, reittiin kuuluvat kaupungit
+    :param route_distance: int, reitin pituus
+    :param departure: str, kohdekaupunki, jota käytetään tulostukseen
+    :return: Python palauttaa implisiittisesti None-arvon
     """
 
-    len_of_list = len(lst_route)
+    # MUUTTUJIEN ALUSTUKSET TIETOTYYPEITTÄIN AAKKOSJÄRJESTYKSESSÄ
 
-    # try:
-    for city in range(0, len_of_list-1, 1):
-        print(f"{lst_route[city]}-", end="")
+    # Kokonaisluvut
+    list_length = len(list_route)
 
-    print(f"{departure} ({route_distance} km)")
+    # Listalta tulostetaan halutussa muodossa kaikki sieltä löytyvät kaupungit
+    # kohdekaupunkia lukuun ottamatta.
+    for city in range(0, list_length - 1, 1):
+        print(f"{list_route[city]}-", end="")
 
-# Helsinki-Lahti-Jyväskylä-Oulu-Rovaniemi (833 km)
+    # Viimeinen kaupunki tulostetaan erikseen, jotta sen perään ei tulisi
+    # kaupunkien väliin tulevaa väliviivaa.
+    print(f"{destination} ({route_distance} km)")
 
 
 def command_neighbours(distance_data):
     """
+    Kysyy käyttäjältä lähtökaupunkia ja etsii sen kaikki naapurikaupungit. Jos
+    lähtökaupunkia ei löydy, tulostetaan virheilmoitus.
+    :param distance_data: dict, sisältää tiedon kaikista kaupungeista
 
-    :param distance_data:
-    :return:
     """
 
+    # MUUTTUJIEN ALUSTUKSET TIETOTYYPEITTÄIN AAKKOJÄRJESTYKSESSÄ
+
+    # Merkkijonot
+    city = ""
+
     city = input("Enter departure city: ").title()
+
+    # Jos lähtökaupunkia ei löydy sanakirjasta, tulostetaan error.
     if not city_in_dict_routes(city, distance_data):
         print(f"Error: '{city}' is unknown.")
 
-    # Toinen parametri city rajaa tulostuksen vain ko. kaupunkiin.
+    # Jos lähtökaupunki löytyy, toinen parametri city rajaa tulostuksen vain
+    # kyseessä olevaan kaupunkiin.
     command_display(distance_data, city)
 
+
 def city_in_dict_routes(city, dict_routes):
+    """
+    Tarkistaa löytyykö haluttua kaupunkia kaupunkisanakirjasta.
+    :param city: str, etsittävä kaupunki
+    :param dict_routes: dict, kaupunkisanakirja.
+    :return: palauttaa totuusarvon tehdyn löydön perusteella.
+    """
 
     if city not in dict_routes:
         return False
@@ -428,23 +516,48 @@ def city_in_dict_routes(city, dict_routes):
 
 
 def command_route(distance_data):
+    """
+    Etsii reitin syötettävien kaupunkien välisen reitin.
+    :param distance_data: dict, sisältää tiedon kaikista kaupungeista
+    :return: Palataan pois funktiosta (= palautuu None-arvo).
+    """
+
+    # MUUTTUJIEN ALUSTUKSET TIETOTYYPEITTÄIN AAKKOJÄRJESTYKSESSÄ
+
+    # Kokonaisluvut
+    route_distance = 0
+
+    # Listat
+    route = []
+
+    # Merkkijonot
+    departure = ""
+    destination = ""
+
+
     departure = input("Enter departure city: ").title()
 
+    # Jos lähtökaupunkia ei löydy sanakirjasta, tulostetaan error.
     if not city_in_dict_routes(departure, distance_data):
         print(f"Error: '{departure}' is unknown.")
+        return
 
     destination = input("Enter destination city: ").title()
 
+    # Tarkistaa omassa funktiossaan löytyykö kaupunkien väliltä yhteyksiä.
     route = find_route(distance_data, departure, destination)
 
+    # Jos yhteyttä kaupunkien välille ei ole, tulostetaan error.
     if not route:
         print(f"No route found between '{departure}' and '"
               f"{destination}'.")
         return
 
+    # Reitin löytyessä laskee sen pituuden siihen tarkoitetussa funktiossa.
     route_distance = calculate_route_distance(distance_data, route)
-    print_route_distance(distance_data, route, route_distance, departure,
-                         destination)
+
+    # Tulostaa kaupungit ja niiden välisen reitin halutussa muodossa.
+    print_route_distance(route, route_distance, destination)
 
 
 def main():
@@ -453,7 +566,7 @@ def main():
     input_file = input("Enter input file name: ")
 
     # distance_data sanakirja sisältää kaikki haulutut tiedot kaikista
-    # kaupungeista
+    # kaupungeista.
     distance_data = read_distance_file(input_file)
 
     if distance_data is None:
